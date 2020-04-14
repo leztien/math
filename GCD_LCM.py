@@ -40,24 +40,18 @@ def factorize(number):  # Primfaktorzerlegung
 
 
 from collections import Counter
-from operator import mul
+from operator import mul, and_, or_
 from functools import reduce
 
-def GCD(number1, number2):
-    factors = tuple((Counter(factorize(number1)) & Counter(factorize(number2))).elements())
-    if not factors: return 1
-    return reduce(mul, factors)
+def GCD(*numbers):
+    multisets = (Counter(factorize(n)) for n in numbers)
+    factors = tuple(reduce(and_, multisets).elements())
+    return reduce(mul, factors) if factors else 1
 
-
-
-
-def LCM(number1, number2):
-    factors = tuple((Counter(factorize(number1)) | Counter(factorize(number2))).elements())
-    if not factors:
-        print("!!! just mult")
-        return number1 * number2
-    return reduce(mul, factors)
-
+def LCM(*numbers):
+    multisets = (Counter(factorize(n)) for n in numbers)
+    factors = tuple(reduce(or_, multisets).elements())
+    return reduce(mul, factors if factors else numbers)
 
 def check_gcd_lcm(number1, number2, gcd, lcm):
     return number1 * number2 == gcd * lcm
@@ -65,7 +59,7 @@ def check_gcd_lcm(number1, number2, gcd, lcm):
 
 #####################################################################################
 
-n1,n2 = 1243, 1244
+n1,n2 = 180, 585
 
 ans = factorize(n1)
 print(ans)
@@ -87,3 +81,11 @@ print("LCM =", lcm)
 
 b = check_gcd_lcm(n1, n2, gcd, lcm)
 print("correct =", b)
+
+#...........................................
+
+gcd = GCD(180, 585, 3003)
+print("GCD =", gcd)
+
+lcm = LCM(180, 585, 3003)
+print("LCM =", lcm)
