@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 
 def make_bin_breaks(probabilities):
-    probabilities = sorted(probabilities)
     assert sum(probabilities)==1.0,"error"
     return [sum(probabilities[:i]) for i in range(1,len(probabilities)+1)]
     
@@ -43,7 +42,7 @@ ff = (f1, f2, f3, f4)
 
 
 p = (0.01, 0.85, 0.07, 0.07)  #must sum to 1.0
-m = 2000000
+m = 50000
 arr = generate_from_discreet_distribution(probabilities=p, n=m)
 
 point = (0,0)
@@ -56,5 +55,6 @@ for ix in arr:
     
 mx = np.vstack(points)
 
-plt.plot(*mx.T, 'k.', markersize=1)
+plt.figure(figsize=(10,10))
+plt.plot(*mx.T, 'k.', markersize=2)
 plt.axis("equal")
