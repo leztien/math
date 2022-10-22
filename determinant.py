@@ -1,28 +1,55 @@
-"""recursive function that calculates the determinant of a matrix"""
+"""recursive determinant"""
 
+
+import random
 import numpy as np
-n = np.random.randint(2,10)
-A = np.random.randint(-10,10, size=(n,n))
 
 
 
-from itertools import cycle
-def determinant(A):
-    #base case
-    if A.shape == (2,2):
-        a,b,c,d = A.ravel()
-        return a*d-b*c  # 2x2 matrix determinant
-    #recursive case
-    return sum(scalar * sign * determinant(np.delete(A[1:], j, axis=1)) 
-               for j,(scalar,sign), in enumerate(zip(A[0], cycle([+1, -1]))))
-        
-    
-
-ans = determinant(A)
-print(ans)
+def make_matrix(n):
+    return [[random.randint(-10,10) if random.randint(0,1) else 0
+             for j in range(n)] for i in range(n)]
 
 
-#compare with numpy
-from numpy.linalg import det
+def select_row(A):
+    counts = [sum(bool(a) for a in row) for row in A]
+    mn = min(counts)
+    for i in range(len(A)):
+        if counts[i] == mn:
+            return i
+
+
+def submatrix(A,i,j):
+    n = len(A)
+    return [[A[i_][j_] for j_ in range(n) if j_ != j] for i_ in range(n) if i_ != i]
+
+
+def det(A):
+    n = len(A)
+    # base case
+    if n == 2:
+        (a,b),(c,d) = A[0], A[1]
+        return a*d - c*b
+    # recursive case
+    i = select_row(A)
+    Summe = 0 # sum
+    for j in range(n):
+        if A[i][j] == 0:
+            continue
+        Summe += (-1)**(i+j) * A[i][j] * det(submatrix(A,i,j))
+    return Summe
+
+##############################################################
+
+
+
+n = random.randint(2,10)
+A = make_matrix(n)
+
+print(*A, sep='\n')
+
+d = np.linalg.det(A)
+print(d)
+
 d = det(A)
 print(d)
